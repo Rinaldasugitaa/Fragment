@@ -8,11 +8,14 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class DynamicFragment extends AppCompatActivity {
 
     private Button button;
     private Button button2;
+    private simplefragment simplefragment;
+    private simplefragment2 simplefragment2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,12 +25,17 @@ public class DynamicFragment extends AppCompatActivity {
         button = findViewById(R.id.btnChange);
         button2 = findViewById(R.id.btnChange2);
 
+        simplefragment = new simplefragment();
+        simplefragment2 = new simplefragment2();
+
         //Fragment Manager
         FragmentManager FM = getSupportFragmentManager();
 
         //Buat object fragment transaction
         FragmentTransaction FT = FM.beginTransaction();
         //tambahkan object SimpleFragment (object) ke Frame
+        FT.add(R.id.Frame_Fragments,simplefragment2);
+        FT.hide(simplefragment2);
         FT.add(R.id.Frame_Fragments,new simplefragment());
         //kemudian commit().
         FT.commit();
@@ -38,7 +46,14 @@ public class DynamicFragment extends AppCompatActivity {
                 //ketika btn go to another fragment diklik, akan pindah ke fragment lain
                 FragmentTransaction FT = getSupportFragmentManager().beginTransaction();
                 //FT.add(R.id.Frame_Fragments,new Another Fragment());
-                FT.replace(R.id.Frame_Fragments,new simplefragment2());
+                if (simplefragment2.isAdded()){
+                    FT.show(simplefragment2);
+                    FT.remove(simplefragment);
+                    Toast.makeText(getApplicationContext(), "Fragment di tambahkan sebelumnya", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    FT.replace(R.id.Frame_Fragments,simplefragment2);
+                }
                 FT.addToBackStack(null);
                 FT.commit();
 
